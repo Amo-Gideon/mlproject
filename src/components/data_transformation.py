@@ -74,6 +74,9 @@ class DataTransformation:
             preprocessing_obj = self.get_data_transformer_object()
             target_column_name = "math_score"
 
+            if target_column_name not in train_df.columns or target_column_name not in test_df.columns:
+                raise ValueError(f"Target column '{target_column_name}' not found in the dataset.")
+
             input_feature_train_df = train_df.drop(columns=[target_column_name], axis=1)
             target_feature_train_df = train_df[target_column_name]
 
@@ -88,6 +91,7 @@ class DataTransformation:
             train_arr = np.c_[input_feature_train_arr, np.array(target_feature_train_df)]
             test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
 
+            os.makedirs(os.path.dirname(self.data_transformation_config.preprocessor_obj_file_path), exist_ok=True)
             save_object(
                 file_path=self.data_transformation_config.preprocessor_obj_file_path,
                 obj=preprocessing_obj
